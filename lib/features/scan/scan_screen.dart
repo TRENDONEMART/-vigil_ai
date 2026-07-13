@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
 
 class ScanScreen extends StatelessWidget {
   const ScanScreen({super.key});
@@ -25,6 +26,7 @@ class ScanScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
+            // SMS Scanner
             ListTile(
               leading: const Icon(Icons.sms),
               title: const Text("Scan Message"),
@@ -32,13 +34,22 @@ class ScanScreen extends StatelessWidget {
               onTap: () {},
             ),
 
+            // Link Scanner
             ListTile(
               leading: const Icon(Icons.link),
               title: const Text("Scan Link"),
               trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LinkScannerScreen(),
+                  ),
+                );
+              },
             ),
 
+            // QR Scanner
             ListTile(
               leading: const Icon(Icons.qr_code_scanner),
               title: const Text("Scan QR Code"),
@@ -46,9 +57,26 @@ class ScanScreen extends StatelessWidget {
               onTap: () {},
             ),
 
+            // APK Scanner
             ListTile(
               leading: const Icon(Icons.security),
               title: const Text("Scan APK"),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {},
+            ),
+
+            // UPI Checker
+            ListTile(
+              leading: const Icon(Icons.account_balance_wallet),
+              title: const Text("UPI Fraud Check"),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {},
+            ),
+
+            // AI Advisor
+            ListTile(
+              leading: const Icon(Icons.smart_toy),
+              title: const Text("AI Fraud Advisor"),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {},
             ),
