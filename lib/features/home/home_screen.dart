@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
+import 'package:vigil_ai/features/message_scanner/message_scanner_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -6,21 +8,41 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final features = [
-      {"title": "SMS Scam", "icon": Icons.sms},
-      {"title": "Link Scanner", "icon": Icons.link},
-      {"title": "QR Scanner", "icon": Icons.qr_code_scanner},
-      {"title": "UPI Check", "icon": Icons.account_balance_wallet},
-      {"title": "AI Advisor", "icon": Icons.smart_toy},
-      {"title": "APK Check", "icon": Icons.security},
+      {
+        "title": "SMS Scam",
+        "icon": Icons.sms,
+      },
+      {
+        "title": "Link Scanner",
+        "icon": Icons.link,
+      },
+      {
+        "title": "QR Scanner",
+        "icon": Icons.qr_code_scanner,
+      },
+      {
+        "title": "UPI Check",
+        "icon": Icons.account_balance_wallet,
+      },
+      {
+        "title": "AI Advisor",
+        "icon": Icons.smart_toy,
+      },
+      {
+        "title": "APK Check",
+        "icon": Icons.security,
+      },
     ];
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           "Vigil AI",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -63,7 +85,10 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(Icons.verified, color: Colors.white),
+                      Icon(
+                        Icons.verified,
+                        color: Colors.white,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         "No Threat Detected",
@@ -103,6 +128,9 @@ class HomeScreen extends StatelessWidget {
                 childAspectRatio: 1,
               ),
               itemBuilder: (context, index) {
+                final title = features[index]["title"] as String;
+                final icon = features[index]["icon"] as IconData;
+
                 return Card(
                   elevation: 6,
                   shape: RoundedRectangleBorder(
@@ -110,7 +138,36 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(22),
-                    onTap: () {},
+                    onTap: () {
+                      switch (title) {
+                        case "SMS Scam":
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                              const MessageScannerScreen(),
+                            ),
+                          );
+                          break;
+
+                        case "Link Scanner":
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                              const LinkScannerScreen(),
+                            ),
+                          );
+                          break;
+
+                        default:
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("$title - Coming Soon"),
+                            ),
+                          );
+                      }
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -118,14 +175,14 @@ class HomeScreen extends StatelessWidget {
                           radius: 32,
                           backgroundColor: Colors.blue.shade50,
                           child: Icon(
-                            features[index]["icon"] as IconData,
+                            icon,
                             color: Colors.blue,
                             size: 34,
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          features[index]["title"] as String,
+                          title,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
