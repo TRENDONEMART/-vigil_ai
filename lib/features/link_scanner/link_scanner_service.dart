@@ -44,7 +44,7 @@ class LinkScannerService {
       }
     }
 
-    // Suspicious words
+    // Suspicious keywords
     final suspiciousWords = [
       "login",
       "verify",
@@ -64,7 +64,7 @@ class LinkScannerService {
 
     for (final word in suspiciousWords) {
       if (input.contains(word)) {
-        score += 8;
+        score += 15;
         reasons.add("Contains suspicious keyword: $word");
       }
     }
@@ -77,13 +77,66 @@ class LinkScannerService {
       reasons.add("Uses IP address instead of domain.");
     }
 
-    // Too long URL
+    // Suspicious TLDs
+    final suspiciousTlds = [
+      ".xyz",
+      ".top",
+      ".click",
+      ".live",
+      ".shop",
+      ".buzz",
+      ".gq",
+      ".tk",
+    ];
+
+    for (final tld in suspiciousTlds) {
+      if (input.contains(tld)) {
+        score += 30;
+        reasons.add("Suspicious domain extension ($tld)");
+        break;
+      }
+    }
+
+    // Fake brand impersonation
+    final brands = [
+      "google",
+      "paypal",
+      "amazon",
+      "facebook",
+      "instagram",
+      "whatsapp",
+      "phonepe",
+      "paytm",
+      "gpay",
+      "sbi",
+      "hdfc",
+      "icici",
+    ];
+
+    for (final brand in brands) {
+      if (input.contains("$brand-") ||
+          input.contains("-$brand")) {
+        score += 35;
+        reasons.add("Possible fake brand impersonation.");
+        break;
+      }
+    }
+
+    // Multiple hyphens
+    if (RegExp(r'-').allMatches(input).length >= 2) {
+      score += 15;
+      reasons.add("Multiple hyphens detected in URL.");
+    }
+
+    // Very long URL
     if (input.length > 120) {
       score += 10;
       reasons.add("Very long URL.");
     }
 
-    if (score > 100) score = 100;
+    if (score > 100) {
+      score = 100;
+    }
 
     String level;
 
@@ -103,10 +156,10 @@ class LinkScannerService {
           ? ["No obvious threat found."]
           : reasons,
       advice: score >= 70
-          ? "Avoid opening this link."
+          ? "Avoid opening this link. It may be phishing."
           : score >= 40
-          ? "Open carefully after verification."
-          : "Looks reasonably safe.",
+          ? "Verify the sender before opening."
+          : "No obvious risk detected.",
     );
   }
 }

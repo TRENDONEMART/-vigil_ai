@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'link_scanner_service.dart';
 import 'link_result.dart';
+import 'link_scanner_service.dart';
 
 class LinkScannerScreen extends StatefulWidget {
   const LinkScannerScreen({super.key});
@@ -36,24 +36,25 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Link Scanner"),
+        centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: controller,
               decoration: const InputDecoration(
                 labelText: "Paste URL",
-                border: OutlineInputBorder(),
                 hintText: "https://example.com",
+                border: OutlineInputBorder(),
               ),
             ),
 
             const SizedBox(height: 20),
 
             SizedBox(
-              width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: scanLink,
@@ -61,10 +62,11 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
 
             if (result != null)
               Card(
+                elevation: 4,
                 child: Padding(
                   padding: const EdgeInsets.all(18),
                   child: Column(
@@ -73,37 +75,37 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
                       Text(
                         "Risk Score: ${result!.riskScore}/100",
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
 
                       const SizedBox(height: 10),
 
-                      Text(
-                        result!.riskLevel,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: getRiskColor(result!.riskLevel),
-                          fontWeight: FontWeight.bold,
+                      Chip(
+                        backgroundColor: getRiskColor(result!.riskLevel),
+                        label: Text(
+                          result!.riskLevel,
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
 
-                      const Divider(height: 30),
+                      const SizedBox(height: 20),
 
                       const Text(
                         "Reasons",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
 
                       const SizedBox(height: 10),
 
                       ...result!.reasons.map(
-                            (e) => Padding(
+                            (reason) => Padding(
                           padding: const EdgeInsets.only(bottom: 6),
-                          child: Text("• $e"),
+                          child: Text("• $reason"),
                         ),
                       ),
 
@@ -113,6 +115,7 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
                         "Advice",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
 
