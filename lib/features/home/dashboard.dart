@@ -12,19 +12,33 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = const [HomeScreen(), ScanScreen()];
+  static const List<Widget> _screens = [
+    HomeScreen(),
+    ScanScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    if (_selectedIndex == index) return;
+
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: KeyedSubtree(
+          key: ValueKey(_selectedIndex),
+          child: _screens[_selectedIndex],
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
+        height: 72,
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        onDestinationSelected: _onItemTapped,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),

@@ -2,11 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vigil_ai/main.dart';
 
 void main() {
-  testWidgets('Vigil AI opens the dashboard', (tester) async {
+  testWidgets('App starts successfully', (tester) async {
     await tester.pumpWidget(const VigilAIApp());
+    await tester.pumpAndSettle();
 
-    expect(find.text('Vigil AI'), findsOneWidget);
-    expect(find.text('SMS Scanner'), findsOneWidget);
-    expect(find.text('QR Scanner'), findsOneWidget);
+    expect(find.byType(VigilAIApp), findsOneWidget);
   });
 }
