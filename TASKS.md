@@ -6,10 +6,10 @@
 - [x] SMS Scanner
 - [x] Link Scanner
 - [ ] QR Scanner (Ready for device testing)
-- [ ] UPI Checker
+- [x] UPI Checker
 - [ ] APK Scanner
-- [ ] Scan History
-- [ ] Settings
+- [x] Scan History
+- [x] Settings
 - [ ] About
 
 ---

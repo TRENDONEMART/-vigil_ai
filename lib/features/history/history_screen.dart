@@ -20,18 +20,37 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> loadHistory() async {
-    history = await HistoryService.getHistory();
-    setState(() {});
+    final loadedHistory = await HistoryService.getHistory();
+    if (!mounted) return;
+    setState(() => history = loadedHistory);
   }
 
   Future<void> clearAll() async {
+    final shouldClear = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear scan history?'),
+        content: const Text('This will permanently remove all saved scans.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
+    );
+    if (shouldClear != true) return;
     await HistoryService.clearHistory();
-    loadHistory();
+    await loadHistory();
   }
 
   Future<void> deleteItem(int index) async {
     await HistoryService.deleteHistory(index);
-    loadHistory();
+    await loadHistory();
   }
 
   Color riskColor(String level) {
@@ -59,57 +78,58 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
         ],
       ),
-      body: history.isEmpty
-          ? const Center(
-        child: Text(
-          "No Scan History",
-          style: TextStyle(fontSize: 18),
-        ),
-      )
-          : ListView.builder(
-        itemCount: history.length,
-        itemBuilder: (context, index) {
-          final item = history[index];
+      body: RefreshIndicator(
+        onRefresh: loadHistory,
+        child: history.isEmpty
+            ? const Center(
+                child: Text("No Scan History", style: TextStyle(fontSize: 18)),
+              )
+            : ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: history.length,
+                itemBuilder: (context, index) {
+                  final item = history[index];
 
-          return Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: riskColor(item.riskLevel),
-                child: Text(
-                  item.riskScore.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: riskColor(item.riskLevel),
+                        child: Text(
+                          item.riskScore.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      title: Text(item.type),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.fraudType),
+                          Text(
+                            item.input,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            item.dateTime.toString(),
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => deleteItem(index),
+                      ),
+                    ),
+                  );
+                },
               ),
-              title: Text(item.type),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.fraudType),
-                  Text(
-                    item.input,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    item.dateTime.toString(),
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => deleteItem(index),
-              ),
-            ),
-          );
-        },
       ),
     );
   }
