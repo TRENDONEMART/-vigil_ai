@@ -87,25 +87,25 @@ share_plus
 
 - [x] Camera Scanner
 
-- [ ] Gallery Scanner
+- [x] Gallery Scanner
 
-- [ ] ML Kit Decode
+- [x] ML Kit Decode
 
-- [ ] Fraud Engine Integration
+- [x] Fraud Engine Integration
 
-- [ ] Copy
+- [x] Copy
 
-- [ ] Share
+- [x] Share
 
-- [ ] History
+- [x] History
 
-- [ ] Flash
+- [x] Flash
 
-- [ ] Camera Switch
+- [x] Camera Switch
 
-- [ ] Scan Again
+- [x] Scan Again
 
-- [ ] Duplicate Protection
+- [x] Duplicate Protection
 
 - [ ] Production Testing
 

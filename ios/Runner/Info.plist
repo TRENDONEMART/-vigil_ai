@@ -16,6 +16,10 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>vigil_ai</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Vigil AI needs camera access to scan QR codes for fraud analysis.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Vigil AI needs photo library access to scan QR codes from selected images.</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

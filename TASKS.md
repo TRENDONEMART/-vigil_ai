@@ -5,7 +5,7 @@
 - [x] Home
 - [x] SMS Scanner
 - [x] Link Scanner
-- [ ] QR Scanner (Production)
+- [ ] QR Scanner (Ready for device testing)
 - [ ] UPI Checker
 - [ ] APK Scanner
 - [ ] Scan History
@@ -44,4 +44,4 @@
 🎯 Complete QR Scanner
 
 Status:
-IN PROGRESS
+READY FOR DEVICE TESTING

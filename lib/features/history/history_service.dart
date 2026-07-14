@@ -5,13 +5,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'history_item.dart';
 
 class HistoryService {
-  static const String _key = "scan_history";
+  static const String _key = 'scan_history';
 
   static Future<void> addHistory(HistoryItem item) async {
     final prefs = await SharedPreferences.getInstance();
+    final history = prefs.getStringList(_key) ?? [];
 
-    final List<String> history =
-        prefs.getStringList(_key) ?? [];
+    if (item.type == 'QR') {
+      final duplicateIndex = history.indexWhere((entry) {
+        final existingItem = HistoryItem.fromJson(jsonDecode(entry));
+
+        return existingItem.type == 'QR' &&
+            existingItem.input.trim() == item.input.trim();
+      });
+
+      if (duplicateIndex >= 0) {
+        history.removeAt(duplicateIndex);
+      }
+    }
 
     history.insert(0, jsonEncode(item.toJson()));
 
@@ -20,16 +31,10 @@ class HistoryService {
 
   static Future<List<HistoryItem>> getHistory() async {
     final prefs = await SharedPreferences.getInstance();
-
-    final List<String> history =
-        prefs.getStringList(_key) ?? [];
+    final history = prefs.getStringList(_key) ?? [];
 
     return history
-        .map(
-          (e) => HistoryItem.fromJson(
-        jsonDecode(e),
-      ),
-    )
+        .map((entry) => HistoryItem.fromJson(jsonDecode(entry)))
         .toList();
   }
 
@@ -41,9 +46,7 @@ class HistoryService {
 
   static Future<void> deleteHistory(int index) async {
     final prefs = await SharedPreferences.getInstance();
-
-    final List<String> history =
-        prefs.getStringList(_key) ?? [];
+    final history = prefs.getStringList(_key) ?? [];
 
     if (index >= 0 && index < history.length) {
       history.removeAt(index);

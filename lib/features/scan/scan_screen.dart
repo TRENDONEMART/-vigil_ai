@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
 import 'package:vigil_ai/features/message_scanner/message_scanner_screen.dart';
+import 'package:vigil_ai/features/qr_scanner/qr_scanner_screen.dart';
 
 class ScanScreen extends StatelessWidget {
   const ScanScreen({super.key});
@@ -8,19 +9,13 @@ class ScanScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Scan"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Scan"), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           const Text(
             "Choose what you want to scan",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 20),
@@ -49,9 +44,7 @@ class ScanScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const LinkScannerScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const LinkScannerScreen()),
                 );
               },
             ),
@@ -63,10 +56,9 @@ class ScanScreen extends StatelessWidget {
               title: const Text("Scan QR Code"),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Coming Soon"),
-                  ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const QrScannerScreen()),
                 );
               },
             ),
@@ -78,11 +70,9 @@ class ScanScreen extends StatelessWidget {
               title: const Text("UPI Fraud Check"),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Coming Soon"),
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
               },
             ),
           ),
@@ -93,11 +83,9 @@ class ScanScreen extends StatelessWidget {
               title: const Text("APK Scanner"),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Coming Soon"),
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
               },
             ),
           ),
@@ -108,11 +96,9 @@ class ScanScreen extends StatelessWidget {
               title: const Text("AI Fraud Advisor"),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Coming Soon"),
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
               },
             ),
           ),
