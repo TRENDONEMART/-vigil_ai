@@ -7,7 +7,7 @@
 - [x] Link Scanner
 - [ ] QR Scanner (Ready for device testing)
 - [x] UPI Checker
-- [ ] APK Scanner
+- [x] APK Scanner
 - [x] Scan History
 - [x] Settings
 - [ ] About
@@ -20,8 +20,8 @@
 - [x] Risk Calculator
 - [x] Threat Detector
 
-- [ ] Fake Brand Detection
-- [ ] URL Reputation
+- [x] Fake Brand Detection
+- [x] URL Reputation
 - [ ] Offline Rules Engine
 - [ ] AI Advisor
 

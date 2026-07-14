@@ -7,6 +7,8 @@
   copy/share actions, flash control, camera switching, and Scan Again.
 - Added UPI Checker validation for UPI payment links with Fraud Engine analysis.
 - Added UPI scan history entries, functional history clearing, refresh, and settings actions.
+- Added offline APK metadata scanning with suspicious-permission detection.
+- Added fake-brand impersonation detection and URL reputation signals to FraudEngine.
 
 ## v0.1
 

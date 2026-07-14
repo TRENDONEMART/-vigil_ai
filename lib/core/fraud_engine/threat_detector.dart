@@ -1,3 +1,6 @@
+import 'fake_brand_detector.dart';
+import 'url_reputation.dart';
+
 class ThreatDetector {
   static Map<String, dynamic> detect(String input) {
     final text = input.toLowerCase();
@@ -100,72 +103,24 @@ class ThreatDetector {
       }
     }
 
-    // ==========================
-    // Links
-    // ==========================
+    final urlResult = UrlReputation.evaluate(input);
+    score += urlResult['score'] as int;
+    reasons.addAll(List<String>.from(urlResult['reasons'] as List));
 
-    if (text.contains("http://") ||
-        text.contains("https://") ||
-        text.contains("bit.ly") ||
-        text.contains(".xyz")) {
-      score += 25;
-      reasons.add("Suspicious link detected.");
-    }
+    final brandResult = FakeBrandDetector.detect(input);
+    score += brandResult['score'] as int;
+    reasons.addAll(List<String>.from(brandResult['reasons'] as List));
 
-    // ==========================
-    // Fake Brands
-    // ==========================
-
-    const brands = [
-      "google",
-      "paypal",
-      "facebook",
-      "instagram",
-      "amazon",
-      "whatsapp",
-      "sbi",
-      "hdfc",
-      "icici",
-    ];
-
-    for (final brand in brands) {
-      if (text.contains("$brand-") ||
-          text.contains("-$brand")) {
-        score += 35;
-        reasons.add("Possible fake brand impersonation.");
-      }
-    }
-
-    // ==========================
-    // Dangerous TLD
-    // ==========================
-
-    const tlds = [
-      ".xyz",
-      ".top",
-      ".click",
-      ".live",
-      ".shop",
-      ".buzz",
-      ".gq",
-      ".tk",
-    ];
-
-    for (final tld in tlds) {
-      if (text.contains(tld)) {
-        score += 30;
-        reasons.add("Suspicious domain extension: $tld");
-      }
+    if ((brandResult['score'] as int) > 0) {
+      fraudType = 'Fake Brand Scam';
+    } else if ((urlResult['score'] as int) > 0) {
+      fraudType = 'Suspicious Link';
     }
 
     if (score > 100) {
       score = 100;
     }
 
-    return {
-      "score": score,
-      "fraudType": fraudType,
-      "reasons": reasons,
-    };
+    return {"score": score, "fraudType": fraudType, "reasons": reasons};
   }
 }

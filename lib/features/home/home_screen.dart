@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vigil_ai/features/history/history_screen.dart';
+import 'package:vigil_ai/features/apk_scanner/apk_scanner_screen.dart';
 import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
 import 'package:vigil_ai/features/message_scanner/message_scanner_screen.dart';
 import 'package:vigil_ai/features/qr_scanner/qr_scanner_screen.dart';
@@ -94,6 +95,14 @@ class HomeScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => const UpiCheckerScreen(),
+                        ),
+                      );
+                      break;
+                    case "APK Check":
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ApkScannerScreen(),
                         ),
                       );
                       break;

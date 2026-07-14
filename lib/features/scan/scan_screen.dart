@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
+import 'package:vigil_ai/features/apk_scanner/apk_scanner_screen.dart';
 import 'package:vigil_ai/features/message_scanner/message_scanner_screen.dart';
 import 'package:vigil_ai/features/qr_scanner/qr_scanner_screen.dart';
 import 'package:vigil_ai/features/upi_checker/upi_checker_screen.dart';
@@ -85,9 +86,10 @@ class ScanScreen extends StatelessWidget {
               title: const Text("APK Scanner"),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                ScaffoldMessenger.of(
+                Navigator.push(
                   context,
-                ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
+                  MaterialPageRoute(builder: (_) => const ApkScannerScreen()),
+                );
               },
             ),
           ),
