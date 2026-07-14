@@ -15,6 +15,7 @@ class FraudEngine {
     final String advice = RiskCalculator.getAdvice(score);
 
     return FraudResult(
+      input: input,
       riskScore: score,
       riskLevel: level,
       fraudType: fraudType,
