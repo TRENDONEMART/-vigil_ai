@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../core/widgets/risk_result_card.dart';
+import '../../shared/widgets/premium_widgets.dart';
 import 'message_result.dart';
 import 'message_scanner_service.dart';
 
@@ -11,131 +14,60 @@ class MessageScannerScreen extends StatefulWidget {
 
 class _MessageScannerScreenState extends State<MessageScannerScreen> {
   final TextEditingController controller = TextEditingController();
-
   MessageResult? result;
 
   void scanMessage() {
-    setState(() {
-      result = MessageScannerService.scan(controller.text);
-    });
+    setState(() => result = MessageScannerService.scan(controller.text));
   }
 
-  Color getRiskColor(String level) {
-    switch (level) {
-      case "High":
-        return Colors.red;
-      case "Medium":
-        return Colors.orange;
-      default:
-        return Colors.green;
-    }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Message Scanner"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Message scanner')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const PremiumPageIntro(
+              eyebrow: 'Private analysis',
+              title: 'Inspect a message',
+              subtitle:
+                  'Spot urgency, impersonation, and sensitive-data requests before you respond.',
+              icon: Icons.sms_outlined,
+            ),
+            const SizedBox(height: 24),
             TextField(
               controller: controller,
               maxLines: 8,
               decoration: const InputDecoration(
-                labelText: "Paste SMS / WhatsApp Message",
-                border: OutlineInputBorder(),
+                labelText: 'SMS or WhatsApp message',
+                hintText: 'Paste the message you want to review…',
+                alignLabelWithHint: true,
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: scanMessage,
-                child: const Text("Analyze Message"),
-              ),
+            const SizedBox(height: 14),
+            ElevatedButton.icon(
+              onPressed: scanMessage,
+              icon: const Icon(Icons.shield_outlined),
+              label: const Text('Analyze message'),
             ),
-
-            const SizedBox(height: 25),
-
-            if (result != null)
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Risk Score: ${result!.riskScore}/100",
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Chip(
-                        backgroundColor: getRiskColor(result!.riskLevel),
-                        label: Text(
-                          result!.riskLevel,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-
-                      const SizedBox(height: 15),
-
-                      Text(
-                        "Fraud Type: ${result!.fraudType}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      const Divider(height: 30),
-
-                      const Text(
-                        "Reasons",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      ...result!.reasons.map(
-                            (reason) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Text("• $reason"),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      const Text(
-                        "Advice",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(result!.advice),
-                    ],
-                  ),
-                ),
+            if (result != null) ...[
+              const SizedBox(height: 24),
+              RiskResultCard(
+                riskScore: result!.riskScore,
+                riskLevel: result!.riskLevel,
+                fraudType: result!.fraudType,
+                reasons: result!.reasons,
+                advice: result!.advice,
               ),
+            ],
           ],
         ),
       ),

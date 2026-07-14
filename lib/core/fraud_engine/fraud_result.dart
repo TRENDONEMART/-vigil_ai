@@ -21,9 +21,7 @@ class FraudResult {
       riskScore: 0,
       riskLevel: "Low",
       fraudType: "Safe",
-      reasons: const [
-        "No obvious scam indicators detected.",
-      ],
+      reasons: const ["No obvious scam indicators detected."],
       advice: "No obvious risk detected.",
     );
   }

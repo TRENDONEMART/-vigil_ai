@@ -9,46 +9,46 @@ class SecurityScoreCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1565C0),
-            Color(0xFF00BCD4),
-          ],
+          colors: [Color(0xFF173B4A), Color(0xFF1A2144)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: const Row(
         children: [
-          Text(
-            "Security Score",
-            style: TextStyle(color: Colors.white70),
-          ),
-          SizedBox(height: 8),
-          Text(
-            "96 / 100",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 38,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Security score', style: TextStyle(color: Colors.white70)),
+                SizedBox(height: 8),
+                Text(
+                  '96 / 100',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 38,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'No threat detected',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.verified, color: Colors.white),
-              SizedBox(width: 8),
-              Text(
-                "No Threat Detected",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            ],
-          )
+          Icon(
+            Icons.verified_user_outlined,
+            color: Color(0xFF4DE1E8),
+            size: 46,
+          ),
         ],
       ),
     );

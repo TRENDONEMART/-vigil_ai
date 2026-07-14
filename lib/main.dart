@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vigil_ai/features/home/dashboard.dart';
 
+import 'core/theme/app_theme.dart';
+
 void main() {
   runApp(const VigilAIApp());
 }
@@ -13,15 +15,7 @@ class VigilAIApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Vigil AI',
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0B1220),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.cyan,
-          brightness: Brightness.dark,
-        ),
-      ),
+      theme: VigilTheme.dark(),
       home: const Dashboard(),
     );
   }

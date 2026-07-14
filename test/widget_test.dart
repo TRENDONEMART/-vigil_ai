@@ -6,7 +6,7 @@ void main() {
     await tester.pumpWidget(const VigilAIApp());
 
     expect(find.text('Vigil AI'), findsOneWidget);
-    expect(find.text('SMS Scam'), findsOneWidget);
+    expect(find.text('SMS Scanner'), findsOneWidget);
     expect(find.text('QR Scanner'), findsOneWidget);
   });
 }

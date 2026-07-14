@@ -1,112 +1,84 @@
 import 'package:flutter/material.dart';
-import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
 import 'package:vigil_ai/features/apk_scanner/apk_scanner_screen.dart';
+import 'package:vigil_ai/features/link_scanner/link_scanner_screen.dart';
 import 'package:vigil_ai/features/message_scanner/message_scanner_screen.dart';
 import 'package:vigil_ai/features/qr_scanner/qr_scanner_screen.dart';
 import 'package:vigil_ai/features/upi_checker/upi_checker_screen.dart';
+
+import '../../shared/widgets/premium_widgets.dart';
 
 class ScanScreen extends StatelessWidget {
   const ScanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final tools = [
+      (
+        'Message',
+        'SMS and chat risk',
+        Icons.sms_outlined,
+        const MessageScannerScreen(),
+      ),
+      (
+        'Link',
+        'URL reputation check',
+        Icons.link_outlined,
+        const LinkScannerScreen(),
+      ),
+      (
+        'QR code',
+        'Camera or gallery scan',
+        Icons.qr_code_scanner,
+        const QrScannerScreen(),
+      ),
+      (
+        'UPI',
+        'Payment link safety',
+        Icons.account_balance_wallet_outlined,
+        const UpiCheckerScreen(),
+      ),
+      ('APK', 'App metadata review', Icons.android, const ApkScannerScreen()),
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Scan"), centerTitle: true),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const Text(
-            "Choose what you want to scan",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-
-          const SizedBox(height: 20),
-
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.sms),
-              title: const Text("Scan Message"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const MessageScannerScreen(),
+      appBar: AppBar(title: const Text('Scan center')),
+      body: LayoutBuilder(
+        builder: (context, constraints) => ListView(
+          padding: const EdgeInsets.fromLTRB(18, 12, 18, 28),
+          children: [
+            const PremiumPageIntro(
+              eyebrow: 'Vigil AI tools',
+              title: 'What would you like to check?',
+              subtitle:
+                  'Choose a scanner to get a clear, actionable risk assessment.',
+              icon: Icons.radar_outlined,
+            ),
+            const SizedBox(height: 26),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: tools.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: constraints.maxWidth > 620 ? 3 : 2,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                childAspectRatio: constraints.maxWidth > 620 ? 1.15 : 1.02,
+              ),
+              itemBuilder: (context, index) {
+                final tool = tools[index];
+                return AnimatedFeatureTile(
+                  title: tool.$1,
+                  subtitle: tool.$2,
+                  icon: tool.$3,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => tool.$4),
                   ),
                 );
               },
             ),
-          ),
-
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.link),
-              title: const Text("Scan Link"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LinkScannerScreen()),
-                );
-              },
-            ),
-          ),
-
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.qr_code_scanner),
-              title: const Text("Scan QR Code"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-                );
-              },
-            ),
-          ),
-
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.account_balance_wallet),
-              title: const Text("UPI Fraud Check"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const UpiCheckerScreen()),
-                );
-              },
-            ),
-          ),
-
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.security),
-              title: const Text("APK Scanner"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ApkScannerScreen()),
-                );
-              },
-            ),
-          ),
-
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.smart_toy),
-              title: const Text("AI Fraud Advisor"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

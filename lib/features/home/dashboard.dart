@@ -12,10 +12,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    ScanScreen(),
-  ];
+  final List<Widget> _screens = const [HomeScreen(), ScanScreen()];
 
   @override
   Widget build(BuildContext context) {

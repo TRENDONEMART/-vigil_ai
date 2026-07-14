@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/widgets/premium_widgets.dart';
 import '../history/history_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -30,14 +31,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
-
-    if (shouldClear == true) {
-      await HistoryService.clearHistory();
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Scan history cleared.')));
-      }
+    if (shouldClear != true) return;
+    await HistoryService.clearHistory();
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Scan history cleared.')));
     }
   }
 
@@ -46,33 +45,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 30),
         children: [
-          const ListTile(
-            leading: Icon(Icons.shield_outlined),
-            title: Text('Protection'),
-            subtitle: Text('Vigil AI analyzes your scans on-device.'),
+          const PremiumPageIntro(
+            eyebrow: 'Control center',
+            title: 'Your privacy, your rules',
+            subtitle:
+                'Vigil AI is designed to keep safety checks on your device.',
+            icon: Icons.tune,
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.offline_bolt_outlined),
-            title: const Text('Offline analysis'),
-            subtitle: const Text('Use the built-in offline fraud engine.'),
-            value: _offlineAnalysis,
-            onChanged: (value) => setState(() => _offlineAnalysis = value),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.delete_sweep_outlined),
-            title: const Text('Clear scan history'),
-            subtitle: const Text(
-              'Remove all saved message, link, QR, and UPI scans.',
+          const SizedBox(height: 24),
+          Card(
+            child: Column(
+              children: [
+                const ListTile(
+                  leading: Icon(Icons.shield_outlined),
+                  title: Text(
+                    'Protection',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  subtitle: Text(
+                    'Offline rules help keep your content private.',
+                  ),
+                ),
+                SwitchListTile(
+                  secondary: const Icon(Icons.offline_bolt_outlined),
+                  title: const Text('Offline analysis'),
+                  subtitle: const Text('Use the built-in fraud engine.'),
+                  value: _offlineAnalysis,
+                  onChanged: (value) =>
+                      setState(() => _offlineAnalysis = value),
+                ),
+              ],
             ),
-            onTap: _clearHistory,
           ),
-          const Divider(),
-          const ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('About Vigil AI'),
-            subtitle: Text('Offline fraud detection • Version 1.0.0'),
+          const SizedBox(height: 14),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.delete_sweep_outlined),
+              title: const Text(
+                'Clear scan history',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              subtitle: const Text('Remove all saved safety checks.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: _clearHistory,
+            ),
+          ),
+          const SizedBox(height: 14),
+          const Card(
+            child: ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text(
+                'About Vigil AI',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text('Offline fraud detection • Version 1.0.0'),
+            ),
           ),
         ],
       ),

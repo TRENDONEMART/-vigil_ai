@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
+
 class RiskResultCard extends StatelessWidget {
   final int riskScore;
   final String riskLevel;
@@ -20,165 +22,178 @@ class RiskResultCard extends StatelessWidget {
     this.onShare,
   });
 
-  Color getRiskColor() {
+  Color get _riskColor {
     switch (riskLevel.toLowerCase()) {
-      case "critical":
-        return Colors.red.shade900;
-
-      case "high":
-        return Colors.red;
-
-      case "medium":
-        return Colors.orange;
-
+      case 'critical':
+        return const Color(0xFFFF5574);
+      case 'high':
+        return const Color(0xFFFF8066);
+      case 'medium':
+        return const Color(0xFFFFC857);
       default:
-        return Colors.green;
+        return VigilTheme.cyan;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      color: VigilTheme.surfaceElevated,
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            Center(
-              child: Text(
-                "Risk Score",
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            Center(
-              child: Text(
-                "$riskScore / 100",
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            Center(
-              child: Chip(
-                backgroundColor: getRiskColor(),
-                label: Text(
-                  riskLevel,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            const Text(
-              "Fraud Type",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-
-            const SizedBox(height: 6),
-
-            Text(
-              fraudType,
-              style: const TextStyle(fontSize: 16),
-            ),
-
-            const Divider(height: 30),
-
-            const Text(
-              "Reasons",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            ...reasons.map(
-                  (reason) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      size: 18,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(reason),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const Divider(height: 30),
-
-            const Text(
-              "Advice",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              advice,
-              style: const TextStyle(fontSize: 16),
-            ),
-
-            const SizedBox(height: 22),
-
             Row(
               children: [
-
                 Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: onCopy,
-                    icon: const Icon(Icons.copy),
-                    label: const Text("Copy"),
+                  child: Text(
+                    'Risk assessment',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: onShare,
-                    icon: const Icon(Icons.share),
-                    label: const Text("Share"),
+                Icon(Icons.insights_outlined, color: _riskColor),
+              ],
+            ),
+            const SizedBox(height: 18),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '$riskScore',
+                  style: TextStyle(
+                    color: _riskColor,
+                    fontSize: 48,
+                    height: 0.95,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 5, left: 6),
+                  child: Text('/ 100', style: TextStyle(color: Colors.white54)),
+                ),
+                const Spacer(),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: _riskColor.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      riskLevel,
+                      style: TextStyle(
+                        color: _riskColor,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: LinearProgressIndicator(
+                value: riskScore.clamp(0, 100) / 100,
+                minHeight: 8,
+                backgroundColor: Colors.white.withValues(alpha: 0.08),
+                color: _riskColor,
+              ),
+            ),
+            const SizedBox(height: 22),
+            _LabelValue(label: 'Classification', value: fraudType),
+            const SizedBox(height: 18),
+            const Text(
+              'Why this matters',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 10),
+            ...reasons.map(
+              (reason) => Padding(
+                padding: const EdgeInsets.only(bottom: 9),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: _riskColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 9),
+                    Expanded(child: Text(reason)),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.045),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(advice, style: const TextStyle(height: 1.4)),
+            ),
+            if (onCopy != null || onShare != null) ...[
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  if (onCopy != null)
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: onCopy,
+                        icon: const Icon(Icons.copy_outlined),
+                        label: const Text('Copy'),
+                      ),
+                    ),
+                  if (onCopy != null && onShare != null)
+                    const SizedBox(width: 10),
+                  if (onShare != null)
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: onShare,
+                        icon: const Icon(Icons.ios_share_outlined),
+                        label: const Text('Share'),
+                      ),
+                    ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LabelValue extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _LabelValue({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white54, fontSize: 12),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+        ),
+      ],
     );
   }
 }

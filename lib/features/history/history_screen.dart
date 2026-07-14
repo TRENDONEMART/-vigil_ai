@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/widgets/premium_widgets.dart';
 import 'history_item.dart';
 import 'history_service.dart';
 
@@ -55,14 +56,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Color riskColor(String level) {
     switch (level.toLowerCase()) {
-      case "critical":
-        return Colors.red.shade900;
-      case "high":
-        return Colors.red;
-      case "medium":
-        return Colors.orange;
+      case 'critical':
+        return const Color(0xFFFF5574);
+      case 'high':
+        return const Color(0xFFFF8066);
+      case 'medium':
+        return const Color(0xFFFFC857);
       default:
-        return Colors.green;
+        return const Color(0xFF4DE1E8);
     }
   }
 
@@ -70,66 +71,109 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Scan History"),
+        title: const Text('History'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_forever),
+            icon: const Icon(Icons.delete_sweep_outlined),
             onPressed: history.isEmpty ? null : clearAll,
           ),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: loadHistory,
-        child: history.isEmpty
-            ? const Center(
-                child: Text("No Scan History", style: TextStyle(fontSize: 18)),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(18, 12, 18, 28),
+          children: [
+            const PremiumPageIntro(
+              eyebrow: 'Your activity',
+              title: 'Scan history',
+              subtitle: 'A private timeline of your recent safety checks.',
+              icon: Icons.history,
+            ),
+            const SizedBox(height: 24),
+            if (history.isEmpty)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 48,
+                    horizontal: 24,
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.auto_awesome_motion_outlined,
+                        size: 42,
+                        color: Colors.white.withValues(alpha: 0.38),
+                      ),
+                      const SizedBox(height: 14),
+                      const Text(
+                        'Your history is clear',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 17,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'Completed scans will appear here.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    ],
+                  ),
+                ),
               )
-            : ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: history.length,
-                itemBuilder: (context, index) {
-                  final item = history[index];
-
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
+            else
+              ...history.asMap().entries.map((entry) {
+                final item = entry.value;
+                final color = riskColor(item.riskLevel);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Card(
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: riskColor(item.riskLevel),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: Container(
+                        height: 46,
+                        width: 46,
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        alignment: Alignment.center,
                         child: Text(
                           item.riskScore.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          style: TextStyle(
+                            color: color,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
-                      title: Text(item.type),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(item.fraudType),
-                          Text(
-                            item.input,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            item.dateTime.toString(),
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
+                      title: Text(
+                        item.type,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '${item.fraudType}\n${item.input}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => deleteItem(index),
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => deleteItem(entry.key),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }),
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../core/widgets/risk_result_card.dart';
+import '../../shared/widgets/premium_widgets.dart';
 import 'link_result.dart';
 import 'link_scanner_service.dart';
 
@@ -11,121 +14,59 @@ class LinkScannerScreen extends StatefulWidget {
 
 class _LinkScannerScreenState extends State<LinkScannerScreen> {
   final TextEditingController controller = TextEditingController();
-
   LinkResult? result;
 
   void scanLink() {
-    setState(() {
-      result = LinkScannerService.scan(controller.text);
-    });
+    setState(() => result = LinkScannerService.scan(controller.text));
   }
 
-  Color getRiskColor(String level) {
-    switch (level) {
-      case "High":
-        return Colors.red;
-      case "Medium":
-        return Colors.orange;
-      default:
-        return Colors.green;
-    }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Link Scanner"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Link scanner')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const PremiumPageIntro(
+              eyebrow: 'Reputation check',
+              title: 'Inspect a link',
+              subtitle: 'Understand a URL’s risk signals before opening it.',
+              icon: Icons.link_outlined,
+            ),
+            const SizedBox(height: 24),
             TextField(
               controller: controller,
+              keyboardType: TextInputType.url,
               decoration: const InputDecoration(
-                labelText: "Paste URL",
-                hintText: "https://example.com",
-                border: OutlineInputBorder(),
+                labelText: 'URL to analyze',
+                hintText: 'https://example.com',
+                prefixIcon: Icon(Icons.language),
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: scanLink,
-                child: const Text("Analyze Link"),
-              ),
+            const SizedBox(height: 14),
+            ElevatedButton.icon(
+              onPressed: scanLink,
+              icon: const Icon(Icons.search),
+              label: const Text('Analyze link'),
             ),
-
-            const SizedBox(height: 20),
-
-            if (result != null)
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Risk Score: ${result!.riskScore}/100",
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Chip(
-                        backgroundColor: getRiskColor(result!.riskLevel),
-                        label: Text(
-                          result!.riskLevel,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      const Text(
-                        "Reasons",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      ...result!.reasons.map(
-                            (reason) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Text("• $reason"),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      const Text(
-                        "Advice",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(result!.advice),
-                    ],
-                  ),
-                ),
+            if (result != null) ...[
+              const SizedBox(height: 24),
+              RiskResultCard(
+                riskScore: result!.riskScore,
+                riskLevel: result!.riskLevel,
+                fraudType: 'Link analysis',
+                reasons: result!.reasons,
+                advice: result!.advice,
               ),
+            ],
           ],
         ),
       ),
