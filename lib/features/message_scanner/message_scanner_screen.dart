@@ -4,6 +4,8 @@ import '../../core/widgets/risk_result_card.dart';
 import '../../shared/widgets/premium_widgets.dart';
 import 'message_result.dart';
 import 'message_scanner_service.dart';
+import '../history/history_item.dart';
+import '../history/history_service.dart';
 
 class MessageScannerScreen extends StatefulWidget {
   const MessageScannerScreen({super.key});
@@ -16,8 +18,25 @@ class _MessageScannerScreenState extends State<MessageScannerScreen> {
   final TextEditingController controller = TextEditingController();
   MessageResult? result;
 
-  void scanMessage() {
-    setState(() => result = MessageScannerService.scan(controller.text));
+  Future<void> scanMessage() async {
+    final messageResult = MessageScannerService.scan(controller.text);
+
+    await HistoryService.addHistory(
+      HistoryItem(
+        type: 'Message',
+        input: controller.text.trim(),
+        riskScore: messageResult.riskScore,
+        riskLevel: messageResult.riskLevel,
+        fraudType: messageResult.fraudType,
+        dateTime: DateTime.now(),
+      ),
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      result = messageResult;
+    });
   }
 
   @override

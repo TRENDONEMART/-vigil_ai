@@ -4,6 +4,8 @@ import '../../core/widgets/risk_result_card.dart';
 import '../../shared/widgets/premium_widgets.dart';
 import 'link_result.dart';
 import 'link_scanner_service.dart';
+import '../history/history_item.dart';
+import '../history/history_service.dart';
 
 class LinkScannerScreen extends StatefulWidget {
   const LinkScannerScreen({super.key});
@@ -16,8 +18,25 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
   final TextEditingController controller = TextEditingController();
   LinkResult? result;
 
-  void scanLink() {
-    setState(() => result = LinkScannerService.scan(controller.text));
+  Future<void> scanLink() async {
+    final linkResult = LinkScannerService.scan(controller.text);
+
+    await HistoryService.addHistory(
+      HistoryItem(
+        type: 'Link',
+        input: controller.text.trim(),
+        riskScore: linkResult.riskScore,
+        riskLevel: linkResult.riskLevel,
+        fraudType: 'Link Analysis',
+        dateTime: DateTime.now(),
+      ),
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      result = linkResult;
+    });
   }
 
   @override
