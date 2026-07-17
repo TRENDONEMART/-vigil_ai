@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../core/widgets/risk_score_gauge.dart';
+import '../../core/widgets/risk_level_chip.dart';
+import '../../core/widgets/action_button_row.dart';
+import '../../core/widgets/recommendation_card.dart';
+
 
 class PremiumResultScreen extends StatelessWidget {
   final int riskScore;
@@ -10,6 +15,20 @@ class PremiumResultScreen extends StatelessWidget {
   final VoidCallback? onCopy;
   final VoidCallback? onShare;
   final VoidCallback? onScanAgain;
+  RiskLevel _mapRiskLevel(String level) {
+    switch (level.toLowerCase()) {
+      case 'critical':
+        return RiskLevel.critical;
+      case 'high':
+        return RiskLevel.high;
+      case 'medium':
+        return RiskLevel.medium;
+      case 'low':
+        return RiskLevel.low;
+      default:
+        return RiskLevel.safe;
+    }
+  }
 
   const PremiumResultScreen({
     super.key,
@@ -54,24 +73,10 @@ class PremiumResultScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    Text(
-                      "$riskScore",
-                      style: const TextStyle(
-                        fontSize: 56,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
-                      "Risk Score",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 18),
-                    Chip(
-                      backgroundColor: riskColor,
-                      label: Text(
-                        riskLevel,
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                    RiskScoreGauge(score: riskScore),
+                    const SizedBox(height: 16),
+                    RiskLevelChip(
+                      level: _mapRiskLevel(riskLevel),
                     ),
                   ],
                 ),
@@ -90,36 +95,17 @@ class PremiumResultScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Reasons",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...reasons.map(
-                          (e) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.check_circle, size: 18),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text(e)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+            Column(
+              children: reasons
+                  .map(
+                    (reason) => RecommendationCard(
+                  icon: Icons.check_circle,
+                  title: "Security Check",
+                  description: reason,
+                  color: Colors.blue,
                 ),
-              ),
+              )
+                  .toList(),
             ),
 
             const SizedBox(height: 20),
@@ -134,27 +120,11 @@ class PremiumResultScreen extends StatelessWidget {
 
             const SizedBox(height: 28),
 
-            FilledButton.icon(
-              onPressed: onCopy,
-              icon: const Icon(Icons.copy),
-              label: const Text("Copy"),
-            ),
-
-            const SizedBox(height: 12),
-
-            FilledButton.icon(
-              onPressed: onShare,
-              icon: const Icon(Icons.share),
-              label: const Text("Share"),
-            ),
-
-            const SizedBox(height: 12),
-
-            OutlinedButton.icon(
-              onPressed: onScanAgain,
-              icon: const Icon(Icons.refresh),
-              label: const Text("Scan Again"),
-            ),
+        ActionButtonRow(
+          onCopy: onCopy,
+          onShare: onShare,
+          onScanAgain: onScanAgain,
+        ),
           ],
         ),
       ),

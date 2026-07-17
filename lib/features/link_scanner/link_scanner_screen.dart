@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/widgets/risk_result_card.dart';
 import '../../shared/widgets/premium_widgets.dart';
+import '../../shared/widgets/premium_result_screen.dart';
 import 'link_result.dart';
 import 'link_scanner_service.dart';
 import '../history/history_item.dart';
@@ -34,9 +35,21 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
 
     if (!mounted) return;
 
-    setState(() {
-      result = linkResult;
-    });
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PremiumResultScreen(
+          riskScore: linkResult.riskScore,
+          riskLevel: linkResult.riskLevel,
+          fraudType: 'Link Analysis',
+          reasons: linkResult.reasons,
+          advice: linkResult.advice,
+          onCopy: () {},
+          onShare: () {},
+          onScanAgain: () => Navigator.pop(context),
+        ),
+      ),
+    );
   }
 
   @override
