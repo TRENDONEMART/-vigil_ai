@@ -3,6 +3,8 @@ import '../../core/widgets/risk_score_gauge.dart';
 import '../../core/widgets/risk_level_chip.dart';
 import '../../core/widgets/action_button_row.dart';
 import '../../core/widgets/recommendation_card.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
 
 class PremiumResultScreen extends StatelessWidget {
@@ -11,6 +13,7 @@ class PremiumResultScreen extends StatelessWidget {
   final String fraudType;
   final List<String> reasons;
   final String advice;
+  final String reportText;
 
   final VoidCallback? onCopy;
   final VoidCallback? onShare;
@@ -37,6 +40,7 @@ class PremiumResultScreen extends StatelessWidget {
     required this.fraudType,
     required this.reasons,
     required this.advice,
+    required this.reportText,
     this.onCopy,
     this.onShare,
     this.onScanAgain,
@@ -120,11 +124,25 @@ class PremiumResultScreen extends StatelessWidget {
 
             const SizedBox(height: 28),
 
-        ActionButtonRow(
-          onCopy: onCopy,
-          onShare: onShare,
-          onScanAgain: onScanAgain,
-        ),
+            ActionButtonRow(
+              onCopy: () async {
+                await Clipboard.setData(
+                  ClipboardData(text: reportText),
+                );
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Report copied to clipboard"),
+                    ),
+                  );
+                }
+              },
+              onShare: () async {
+                await Share.share(reportText);
+              },
+              onScanAgain: onScanAgain,
+            ),
           ],
         ),
       ),

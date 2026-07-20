@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
 
-import '../../core/widgets/risk_result_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../shared/widgets/premium_result_screen.dart';
 import '../../shared/widgets/premium_widgets.dart';
-import 'message_result.dart';
-import 'message_scanner_service.dart';
 import '../history/history_item.dart';
 import '../history/history_service.dart';
+import 'message_result.dart';
+import 'message_scanner_service.dart';
 
 class MessageScannerScreen extends StatefulWidget {
   const MessageScannerScreen({super.key});
@@ -36,6 +39,49 @@ class _MessageScannerScreenState extends State<MessageScannerScreen> {
 
     setState(() {
       result = messageResult;
+    });
+  }
+
+  String _reportText() {
+    final message = result!;
+    final reasons = message.reasons.map((e) => '- $e').join('\n');
+
+    return '''
+Vigil AI Message Analysis
+
+Risk Score: ${message.riskScore}/100
+Risk Level: ${message.riskLevel}
+Fraud Type: ${message.fraudType}
+
+Reasons:
+$reasons
+
+Advice:
+${message.advice}
+''';
+  }
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: _reportText()));
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Message report copied.')),
+    );
+  }
+
+  Future<void> _share() async {
+    await Share.share(
+      _reportText(),
+      subject: 'Vigil AI Message Analysis',
+    );
+  }
+
+  void _scanAgain() {
+    controller.clear();
+    setState(() {
+      result = null;
     });
   }
 
@@ -79,12 +125,16 @@ class _MessageScannerScreenState extends State<MessageScannerScreen> {
             ),
             if (result != null) ...[
               const SizedBox(height: 24),
-              RiskResultCard(
+              PremiumResultScreen(
                 riskScore: result!.riskScore,
                 riskLevel: result!.riskLevel,
                 fraudType: result!.fraudType,
                 reasons: result!.reasons,
                 advice: result!.advice,
+                reportText: _reportText(),
+                onCopy: _copy,
+                onShare: _share,
+                onScanAgain: _scanAgain,
               ),
             ],
           ],

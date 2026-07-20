@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../core/widgets/risk_result_card.dart';
+import '../../shared/widgets/premium_result_screen.dart';
 import '../history/history_item.dart';
 import '../history/history_service.dart';
 import 'upi_checker_service.dart';
@@ -171,21 +171,18 @@ ${result.advice}''';
                 ),
               ),
               const SizedBox(height: 16),
-              RiskResultCard(
+              PremiumResultScreen(
                 riskScore: result.riskScore,
                 riskLevel: result.riskLevel,
                 fraudType: result.fraudType,
                 reasons: result.reasons,
                 advice: result.advice,
+                reportText: _shareText(),
                 onCopy: _copy,
                 onShare: _share,
+                onScanAgain: _clear,
               ),
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                onPressed: _clear,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Check Another Link'),
-              ),
+
             ],
           ],
         ),

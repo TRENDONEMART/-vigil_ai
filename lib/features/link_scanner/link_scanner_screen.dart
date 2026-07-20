@@ -44,6 +44,21 @@ class _LinkScannerScreenState extends State<LinkScannerScreen> {
           fraudType: 'Link Analysis',
           reasons: linkResult.reasons,
           advice: linkResult.advice,
+          reportText: '''
+Vigil AI Security Report
+
+Risk Score: ${linkResult.riskScore}
+Risk Level: ${linkResult.riskLevel}
+
+Fraud Type:
+Link Analysis
+
+Reasons:
+${linkResult.reasons.join('\n• ')}
+
+Recommendation:
+${linkResult.advice}
+''',
           onCopy: () {},
           onShare: () {},
           onScanAgain: () => Navigator.pop(context),

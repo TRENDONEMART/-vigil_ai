@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../core/widgets/risk_result_card.dart';
+import '../../shared/widgets/premium_result_screen.dart';
 import '../history/history_item.dart';
 import '../history/history_service.dart';
 import 'qr_result.dart';
@@ -225,21 +225,18 @@ ${qrResult.advice}
                 const SizedBox(height: 8),
                 SelectableText(result!.rawValue),
                 const SizedBox(height: 20),
-                RiskResultCard(
+                PremiumResultScreen(
                   riskScore: result!.riskScore,
                   riskLevel: result!.riskLevel,
                   fraudType: result!.fraudType,
                   reasons: result!.reasons,
                   advice: result!.advice,
+                  reportText: _formatResult(result!),
                   onCopy: _copyResult,
                   onShare: _shareResult,
+                  onScanAgain: _scanAgain,
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: _scanAgain,
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text('Scan Again'),
-                ),
+
               ],
             ),
           ),
